@@ -6,10 +6,9 @@ import open3d as o3d
 
 # Read point cloud with in-built I/O function
 def read_point_cloud_o3d(filename):
-    import open3d as o3d
     pcd = o3d.io.read_point_cloud(filename, format='auto', remove_nan_points=True, remove_infinite_points=True,
                                   print_progress=False)
-    print(pcd)
+    return pcd
 
 
 # Import LAS file
