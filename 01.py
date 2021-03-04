@@ -4,7 +4,7 @@ import numpy as np
 
 
 # Read the Las file function
-file = "D:/! PW mgr/Sem2/[CVD] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las"
+file = "D:/! PW mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las"
 las_pcd = laspy.file.File(file, header=None, mode="rw")
 X = las_pcd.x
 Y = las_pcd.y
