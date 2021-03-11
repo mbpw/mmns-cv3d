@@ -17,6 +17,22 @@ def manual_pcd_croppings(point_cloud):
     print(" (4) Press 'F' to switch to freeview mode")
     o3d.visualization.draw_geometries_with_editing([point_cloud], window_name="Manual point cloud cropping ")
 
+#Manual point picking
+def manual_point_picking(point_cloud):
+    print("Manual point measurement")
+    print("The data processing steps:")
+    print(" (1.1) Point measurement - shift + left mouse button")
+    print(" (1.2) The undo point picking - shift + right mouse button")
+    print(" (2) End of measurement - press Q button")
+    vis = o3d.visualization.VisualizerWithEditing()
+    vis.create_window(window_name='Manual point picking')
+    vis.add_geometry(point_cloud)
+    vis.run() # user picks points
+    vis.destroy_window()
+    print("The end of measurement")
+    print(vis.get_picked_points())
+    return vis.get_picked_points()
+
 
 lo3d = las_to_o3d('D:/! PW mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las')
 manual_pcd_croppings(lo3d)
