@@ -1,4 +1,6 @@
 # Import necessary libraries
+import copy
+
 import laspy
 import numpy as np
 import open3d as o3d
@@ -45,3 +47,12 @@ def manual_point_picking(point_cloud):
     print("The end of measurement")
     print(vis.get_picked_points())
     return vis.get_picked_points()
+
+
+def draw_registered_pcd(ref_point_cloud, oriented_point_cloud, transformation):
+    ori_temp = copy.deepcopy(oriented_point_cloud)
+    ref_temp = copy.deepcopy(ref_point_cloud)
+    ori_temp.paint_uniform_color([1, 0, 0])
+    ref_temp.paint_uniform_color([0, 1, 0])
+    ori_temp.transform(transformation)
+    o3d.visualization.draw_geometries([ori_temp, ref_temp])
