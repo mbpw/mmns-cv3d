@@ -3,6 +3,7 @@ import open3d as o3d
 import matplotlib.pyplot as plt
 from tools import read_point_cloud_o3d
 
+
 # Poisson surface reconstruction
 def normals_estimation(point_cloud):
     print("Point cloud vertex normals estimation")
@@ -12,9 +13,9 @@ def normals_estimation(point_cloud):
 
 def poisson_reconstruction(point_cloud):
     print("Poisson reconstruction")
-    normals_estimation(point_cloud)
+    # normals_estimation(point_cloud)
     with o3d.utility.VerbosityContextManager(o3d.utility.VerbosityLevel.Debug) as cm:
-        tin, density = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd=point_cloud, depth=4)
+        tin, density = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd=point_cloud, depth=8)
         print(tin)
         o3d.visualization.draw_geometries([tin])
         return tin, density
@@ -46,7 +47,7 @@ def density_tin_filtration(tin, density, quantile=0.01):
 def poisson_filtration(point_cloud):
     tin, density = poisson_reconstruction(point_cloud)
     mesh_density(density, tin)
-    density_tin_filtration(tin, density, quantile=0.05)
+    density_tin_filtration(tin, density, quantile=0.01)
     o3d.io.write_triangle_mesh("poisson_model.ply", tin)
 
 
