@@ -17,6 +17,7 @@ def manual_pcd_croppings(point_cloud):
     print(" (4) Press 'F' to switch to freeview mode")
     o3d.visualization.draw_geometries_with_editing([point_cloud], window_name="Manual point cloud cropping ")
 
+
 #Manual point picking
 def manual_point_picking(point_cloud):
     print("Manual point measurement")

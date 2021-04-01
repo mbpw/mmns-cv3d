@@ -28,3 +28,20 @@ def las_to_o3d(file):
     point_cloud.points = o3d.utility.Vector3dVector(las_points)
     point_cloud.colors = o3d.utility.Vector3dVector(las_colors)
     return point_cloud
+
+
+#Manual point picking
+def manual_point_picking(point_cloud):
+    print("Manual point measurement")
+    print("The data processing steps:")
+    print(" (1.1) Point measurement - shift + left mouse button")
+    print(" (1.2) The undo point picking - shift + right mouse button")
+    print(" (2) End of measurement - press Q button")
+    vis = o3d.visualization.VisualizerWithEditing()
+    vis.create_window(window_name='Manual point picking')
+    vis.add_geometry(point_cloud)
+    vis.run() # user picks points
+    vis.destroy_window()
+    print("The end of measurement")
+    print(vis.get_picked_points())
+    return vis.get_picked_points()
