@@ -1,3 +1,8 @@
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
 import open3d as o3d
 from tools import las_to_o3d
 
@@ -17,7 +22,7 @@ def uniform_downsample(point_cloud, recduction_every_k_points=10):
     return uniform_downsample_pcd
 
 
-lo3d = las_to_o3d('D:/! PW mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las')
+lo3d = las_to_o3d('data/01_las/chmura_dj.las')
 # o3d.visualization.draw_geometries([lo3d])
 # pcd_downsampling(lo3d, 1)
 uniform_downsample(lo3d, 1)

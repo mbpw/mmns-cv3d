@@ -1,3 +1,8 @@
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
 # Function for point cloud cropping
 import open3d as o3d
 from tools import las_to_o3d
@@ -18,7 +23,7 @@ def manual_pcd_croppings(point_cloud):
     o3d.visualization.draw_geometries_with_editing([point_cloud], window_name="Manual point cloud cropping ")
 
 
-#Manual point picking
+# Manual point picking
 def manual_point_picking(point_cloud):
     print("Manual point measurement")
     print("The data processing steps:")
@@ -28,12 +33,12 @@ def manual_point_picking(point_cloud):
     vis = o3d.visualization.VisualizerWithEditing()
     vis.create_window(window_name='Manual point picking')
     vis.add_geometry(point_cloud)
-    vis.run() # user picks points
+    vis.run()  # user picks points
     vis.destroy_window()
     print("The end of measurement")
     print(vis.get_picked_points())
     return vis.get_picked_points()
 
 
-lo3d = las_to_o3d('D:/! PW mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las')
+lo3d = las_to_o3d('data/01_las/chmura_dj.las')
 manual_pcd_croppings(lo3d)

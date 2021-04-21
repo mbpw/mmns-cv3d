@@ -1,3 +1,8 @@
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
 import open3d as o3d
 
 from tools import read_point_cloud_o3d
@@ -22,6 +27,6 @@ def ball_pivoting(point_cloud, ball_radius=[0.005, 0.01, 0.02, 0.04]):
 
 if __name__ == '__main__':
     pcd = read_point_cloud_o3d(
-        "D:/PW_mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/02_eagle/eagle.points.ply")
+        "data/02_eagle/eagle.points.ply")
     # ball_pivoting(pcd, ball_radius=[0.06, 0.08, 0.15])
     ball_pivoting(pcd)

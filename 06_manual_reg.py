@@ -1,6 +1,9 @@
-"""
-Manual target-based registration
-"""
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
+# Manual target-based registration
 import copy
 
 import numpy as np
@@ -49,6 +52,6 @@ def manual_target_based(ref_point_cloud, oriented_point_cloud, type='Measurement
 
 if __name__ == '__main__':
     print('Starting app...')
-    ref = las_to_o3d("D:/PW_mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las")
-    ori = las_to_o3d("D:/PW_mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_zdjecia_naziemne.las")
+    ref = las_to_o3d("data/01_las/chmura_dj.las")
+    ori = las_to_o3d("data/01_las/chmura_zdjecia_naziemne.las")
     manual_target_based(ref, ori)

@@ -1,3 +1,8 @@
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
 import numpy as np
 import open3d as o3d
 import matplotlib.pyplot as plt
@@ -53,5 +58,5 @@ def poisson_filtration(point_cloud):
 
 if __name__ == '__main__':
     pcd = read_point_cloud_o3d(
-        "D:/PW_mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/02_eagle/eagle.points.ply")
+        "data/02_eagle/eagle.points.ply")
     poisson_filtration(pcd)

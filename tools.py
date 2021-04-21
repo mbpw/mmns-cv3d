@@ -1,6 +1,9 @@
-# Import necessary libraries
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
 import copy
-
 import laspy
 import numpy as np
 import open3d as o3d
@@ -32,7 +35,7 @@ def las_to_o3d(file):
     return point_cloud
 
 
-#Manual point picking
+# Manual point picking
 def manual_point_picking(point_cloud):
     print("Manual point measurement")
     print("The data processing steps:")
@@ -42,7 +45,7 @@ def manual_point_picking(point_cloud):
     vis = o3d.visualization.VisualizerWithEditing()
     vis.create_window(window_name='Manual point picking')
     vis.add_geometry(point_cloud)
-    vis.run() # user picks points
+    vis.run()  # user picks points
     vis.destroy_window()
     print("The end of measurement")
     print(vis.get_picked_points())

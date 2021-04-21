@@ -1,10 +1,15 @@
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
 # Import LASPy
 import laspy
 import numpy as np
 
 
 # Read the Las file function
-file = "D:/! PW mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las"
+file = "data/01_las/chmura_dj.las"
 las_pcd = laspy.file.File(file, header=None, mode="rw")
 X = las_pcd.x
 Y = las_pcd.y

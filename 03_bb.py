@@ -1,5 +1,10 @@
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
+# Bounding box computation
 import open3d as o3d
-
 from tools import las_to_o3d
 
 
@@ -19,5 +24,5 @@ def bounding_box_computation(point_cloud, type='AxisAlignedBoundingBox'):
         o3d.visualization.draw_geometries([point_cloud, obb], window_name='OrientedBoundingBox')
 
 
-lo3d = las_to_o3d('D:/! PW mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las')
+lo3d = las_to_o3d('data/01_las/chmura_dj.las')
 bounding_box_computation(lo3d)

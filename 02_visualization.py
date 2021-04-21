@@ -1,3 +1,9 @@
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
+# Visulization of point cloud using Open3D
 import open3d as o3d
 
 # Function available in the visualizer
@@ -29,5 +35,5 @@ def show_pcd(point_cloud, window_name='Window name'):
     o3d.visualization.draw_geometries_with_editing([point_cloud], window_name, width=1920, height=1080, left=50, top=50)
 
 
-lo3d = las_to_o3d('D:/! PW mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las')
+lo3d = las_to_o3d('data/01_las/chmura_dj.las')
 show_pcd(lo3d)

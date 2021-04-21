@@ -1,3 +1,8 @@
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
 # Import necessary libraries
 import laspy
 import numpy as np
@@ -31,4 +36,4 @@ def las_to_o3d(file):
     return point_cloud
 
 
-lo3d = las_to_o3d('D:/! PW mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las')
+lo3d = las_to_o3d('data/01_las/chmura_dj.las')

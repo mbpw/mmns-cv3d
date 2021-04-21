@@ -1,5 +1,8 @@
-import copy
-
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
 import numpy as np
 import open3d as o3d
 from tools import las_to_o3d, draw_registered_pcd, manual_point_picking
@@ -72,8 +75,8 @@ def ICP_registration(source, target, threshold=1.0, trans_init=np.identity(4), m
         print(reg_p2pl.transformation)
         draw_registered_pcd(source, target, reg_p2pl.transformation)
         information_reg_p2pl = o3d.pipelines.registration.get_information_matrix_from_point_clouds(
-        source, target, threshold,reg_p2pl.transformation)
-        return reg_p2pl.transformation,information_reg_p2pl
+            source, target, threshold, reg_p2pl.transformation)
+        return reg_p2pl.transformation, information_reg_p2pl
     elif method == 'cicp':
         reg_cicp = o3d.pipelines.registration.registration_colored_icp(source, target, threshold, trans_init)
         print(reg_cicp)
@@ -81,7 +84,7 @@ def ICP_registration(source, target, threshold=1.0, trans_init=np.identity(4), m
         print(reg_cicp.transformation)
         draw_registered_pcd(source, target, reg_cicp.transformation)
         information_reg_cicp = o3d.pipelines.registration.get_information_matrix_from_point_clouds(
-        source, target, threshold,reg_cicp.transformation)
+            source, target, threshold, reg_cicp.transformation)
         return reg_cicp.transformation, information_reg_cicp
     else:
         print('The ICP method was incorrect')
@@ -89,11 +92,10 @@ def ICP_registration(source, target, threshold=1.0, trans_init=np.identity(4), m
 
 if __name__ == '__main__':
     print('Starting app...')
-    ref = las_to_o3d("D:/PW_mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las")
+    ref = las_to_o3d("data/01_las/chmura_dj.las")
     ori = las_to_o3d(
-        "D:/PW_mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_zdjecia_naziemne.las")
+        "data/01_las/chmura_zdjecia_naziemne.las")
     trans_man = manual_target_based(ref, ori)
     ICP_registration(ref, ori, threshold=0.5, trans_init=trans_man, method='p2p')
 
     # ref.compute_point_cloud_distance()
-

@@ -1,3 +1,8 @@
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
 import open3d as o3d
 
 from tools import las_to_o3d
@@ -13,7 +18,7 @@ def outlier_remove(point_cloud, n_neighbour=30, std_ratio=2.0):
     return filtered_point_cloud, outliers
 
 
-lo3d = las_to_o3d('D:/! PW mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las')
+lo3d = las_to_o3d('data/01_las/chmura_dj.las')
 # outlier_remove(lo3d, 30, 2.5)
 # outlier_remove(lo3d, 100, 2.0)
 # outlier_remove(lo3d, 30, 4.5)
