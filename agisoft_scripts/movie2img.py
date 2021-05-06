@@ -9,7 +9,7 @@ no_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 print(no_frames)
 for i in range(no_frames):
     ret, frame = cap.read()
-    if i % 30 == 0:
-        cv2.imwrite('frames/Frame_cap_%s.jpg' % str(i), frame)
+    if i % 100 == 0:
+        cv2.imwrite('frames/Frame_cap_%05d.jpg' % str(i), frame)
     if i % 500 == 0:
         print(i)
