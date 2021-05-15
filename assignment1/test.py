@@ -27,8 +27,8 @@ async def do_urls():
     completed, pending = await asyncio.wait(tasks)
     results = [task.result() for task in completed]
     print('\n'.join(results))
-    import point1
-    point1.visualize_cloud("C:\\Users\\Mateusz\\CV3D\\data\\01_las\\chmura_dj.las")
+    import visualization_module
+    visualization_module.visualize_cloud("C:\\Users\\Mateusz\\CV3D\\data\\01_las\\chmura_dj.las")
 
 
 def do_freezed():
