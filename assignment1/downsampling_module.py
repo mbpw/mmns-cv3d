@@ -7,7 +7,7 @@ import open3d as o3d
 
 
 # Point cloud voxel size downsampling
-def pcd_downsampling(point_cloud, voxel_size=0.1):
+def voxel_downsampling(point_cloud, voxel_size=0.1):
     voxel_point_cloud = point_cloud.voxel_down_sample(voxel_size=voxel_size)
     print("Draw point cloud in the voxel structure - voxel_size %f: " % voxel_size)
     o3d.visualization.draw_geometries([voxel_point_cloud])

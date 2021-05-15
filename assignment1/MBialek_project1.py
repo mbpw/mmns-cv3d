@@ -117,11 +117,45 @@ b5.grid(row=0, column=4, rowspan=2)
 debug_var = BooleanVar()
 
 """
+DOWNSAMPLING
+"""
+
+
+def downsample(cloud):
+    # TODO: parameters
+    from downsampling_module import voxel_downsampling
+    global cloud1, cloud2
+
+    if cloud == 'c1':
+        if cloud1 is None:
+            show_popup("cloud 1")
+            return
+        print("Downsampling cloud 1...")
+        downsampled = voxel_downsampling(cloud1, 0.1)
+        cloud1 = downsampled
+    elif cloud == 'c2':
+        if cloud2 is None:
+            show_popup("cloud 2")
+            return
+        print("Downsampling cloud 2...")
+        downsampled = voxel_downsampling(cloud2, 0.1)
+        cloud2 = downsampled
+
+
+lbl3 = Label(root, text="Downsample:", anchor="e")
+b13 = Button(root, text="Cloud 1", command=lambda: threading.Thread(target=downsample("c1")).start())
+b14 = Button(root, text="Cloud 2", command=lambda: threading.Thread(target=downsample("c2")).start())
+lbl3.grid(row=3, column=0, sticky='e')
+b13.grid(row=3, column=2)
+b14.grid(row=3, column=3)
+
+"""
 OUTLIERS
 """
 
 
 def remove_noise(cloud):
+    # TODO: parameters
     from outliers_module import outlier_remove_stats
     global cloud1, cloud2
 
@@ -144,9 +178,9 @@ def remove_noise(cloud):
 lbl2 = Label(root, text="Remove noise:", anchor="e")
 b11 = Button(root, text="Cloud 1", command=lambda: threading.Thread(target=remove_noise("c1")).start())
 b12 = Button(root, text="Cloud 2", command=lambda: threading.Thread(target=remove_noise("c2")).start())
-lbl2.grid(row=3, column=0, sticky='e')
-b11.grid(row=3, column=2)
-b12.grid(row=3, column=3)
+lbl2.grid(row=4, column=0, sticky='e')
+b11.grid(row=4, column=2)
+b12.grid(row=4, column=3)
 
 """
 REGISTRATION
@@ -165,20 +199,20 @@ def registration(method="Measurement", file=None):
 
 
 lbl1 = Label(root, text="Point clouds registration:", anchor="e")
-lbl1.grid(row=4, column=0, sticky='e')
+lbl1.grid(row=5, column=0, sticky='e')
 
 chk1 = Checkbutton(root, variable=debug_var, onvalue=True, offvalue=False)
 
-chk1.grid(row=4, column=1)
+chk1.grid(row=5, column=1)
 
 b6 = Button(root, text="Manual", command=lambda: threading.Thread(target=registration()).start())
-b6.grid(row=4, column=2)
+b6.grid(row=5, column=2)
 
 b9 = Button(root, text="From file", command=lambda: threading.Thread(target=registration("File", "File")).start())
-b9.grid(row=4, column=3)
+b9.grid(row=5, column=3)
 
 b10 = Button(root, text="DMatching", command=lambda: threading.Thread(target=registration("ICP")).start())
-b10.grid(row=4, column=4, padx=5)
+b10.grid(row=5, column=4, padx=5)
 
 
 # Start GUI loop
