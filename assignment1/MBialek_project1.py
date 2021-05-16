@@ -11,6 +11,7 @@ import threading
 import visualization_module
 import tools
 from registration_module import *
+from mesh_module import poisson_filtration
 
 """
 Point clouds placeholders
@@ -24,6 +25,8 @@ GUI
 root = Tk()
 root.title("")
 
+debug_var = BooleanVar()
+
 e1 = Entry(root, width=80)
 e1.grid(row=0, column=0)
 e1.insert(0, "D:/PW_mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_dj.las")
@@ -33,7 +36,28 @@ e2.grid(row=1, column=0)
 e2.insert(0,
           "D:/PW_mgr/Sem2/[CV3D] Computer Vision and 3D data processing/proj/data/01_las/chmura_zdjecia_naziemne.las")
 
-"""GUI FUNCTIONS"""
+b1 = Button(root, text="...", command=lambda: open_cloud_btn1())
+b1.grid(row=0, column=1)
+
+b2 = Button(root, text="...", command=lambda: open_cloud_btn2())
+b2.grid(row=1, column=1)
+
+b3 = Button(root, text="Preview", command=lambda: threading.Thread(target=preview('c1')).start())
+b4 = Button(root, text="Preview", command=lambda: threading.Thread(target=preview('c2')).start())
+b3.grid(row=0, column=2, padx=5)
+b4.grid(row=1, column=2)
+
+b7 = Button(root, text="Load",
+            command=lambda: threading.Thread(target=load_cloud_memory, args=[e1.get(), 'c1']).start())
+b8 = Button(root, text="Load",
+            command=lambda: threading.Thread(target=load_cloud_memory, args=[e2.get(), 'c2']).start())
+b7.grid(row=0, column=3, padx=5)
+b8.grid(row=1, column=3)
+
+b5 = Button(root, text="Visualize both", command=lambda: threading.Thread(target=visualize_both()).start())
+b5.grid(row=0, column=4, rowspan=2)
+
+"""BASIC GUI AND PCD VISUALIZATION FUNCTIONS"""
 
 
 def open_cloud_btn1():
@@ -92,29 +116,6 @@ def load_cloud_memory(path, c_number):
         return
     print("Successfuly Loaded points from " + path + " to memory!")
 
-
-b1 = Button(root, text="...", command=open_cloud_btn1)
-b1.grid(row=0, column=1)
-
-b2 = Button(root, text="...", command=open_cloud_btn2)
-b2.grid(row=1, column=1)
-
-b3 = Button(root, text="Preview", command=lambda: threading.Thread(target=preview('c1')).start())
-b4 = Button(root, text="Preview", command=lambda: threading.Thread(target=preview('c2')).start())
-b3.grid(row=0, column=2, padx=5)
-b4.grid(row=1, column=2)
-
-b7 = Button(root, text="Load",
-            command=lambda: threading.Thread(target=load_cloud_memory, args=[e1.get(), 'c1']).start())
-b8 = Button(root, text="Load",
-            command=lambda: threading.Thread(target=load_cloud_memory, args=[e2.get(), 'c2']).start())
-b7.grid(row=0, column=3, padx=5)
-b8.grid(row=1, column=3)
-
-b5 = Button(root, text="Visualize both", command=lambda: threading.Thread(target=visualize_both()).start())
-b5.grid(row=0, column=4, rowspan=2)
-
-debug_var = BooleanVar()
 
 """
 DOWNSAMPLING
@@ -214,6 +215,25 @@ b9.grid(row=5, column=3)
 b10 = Button(root, text="DMatching", command=lambda: threading.Thread(target=registration("ICP")).start())
 b10.grid(row=5, column=4, padx=5)
 
+"""
+COMBINE AND CREATE TIN
+"""
+
+
+def generate_mesh():
+    if cloud1 is None or cloud2 is None:
+        show_popup("both clouds")
+        return
+    file = filedialog.asksaveasfilename()
+    if file is not None:
+        print("Combining two point clouds...")
+        combined = cloud1 + cloud2
+        print("Saving...")
+        poisson_filtration(combined, file, True)
+
+
+b15 = Button(root, text="Generate Mesh", command=lambda: threading.Thread(target=generate_mesh()).start)
+b15.grid(row=6, column=0)
 
 # Start GUI loop
 mainloop()

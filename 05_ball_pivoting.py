@@ -18,15 +18,14 @@ def normals_estimation(point_cloud):
 
 def ball_pivoting(point_cloud, ball_radius=[0.005, 0.01, 0.02, 0.04]):
     point_cloud_normals = normals_estimation(point_cloud)
-    # print("Ball Pivoting surface reconstruction")
+    print("Ball Pivoting surface reconstruction")
     # tin = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(point_cloud,
     #                                                                       o3d.utility.DoubleVector(ball_radius))
-    o3d.visualization.draw_geometries([point_cloud, point_cloud_normals])
+    o3d.visualization.draw_geometries([point_cloud])
     # o3d.visualization.draw_geometries([tin])
 
 
 if __name__ == '__main__':
-    pcd = read_point_cloud_o3d(
-        "data/02_eagle/eagle.points.ply")
-    # ball_pivoting(pcd, ball_radius=[0.06, 0.08, 0.15])
-    ball_pivoting(pcd)
+    pcd = read_point_cloud_o3d("data/02_eagle/eagle.points.ply")
+    ball_pivoting(pcd, ball_radius=[0.06, 0.08, 0.15])
+    # ball_pivoting(pcd)
