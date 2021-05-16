@@ -3,6 +3,20 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="C:\Users\Mateusz\AppData\Local\JetBrains\PyCharmCE2021.1\python_stubs\-926495050\open3d\cpu\pybind\pipelines\registration\TransformationEstimation.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="C:\Users\Mateusz\AppData\Local\JetBrains\PyCharmCE2021.1\python_stubs\-926495050\open3d\cpu\pybind\pipelines\registration\TransformationEstimationPointToPoint.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\assignment1\2_Manual.py">
           <value>
             <Attribute>

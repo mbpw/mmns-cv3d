@@ -188,35 +188,53 @@ REGISTRATION
 """
 
 
-def registration(method="Measurement", file=None):
+def registration(algorithm="tb", method="Measurement", file=None):
     global cloud1, cloud2, debug_var
     if cloud1 is None or cloud2 is None:
         show_popup("both clouds")
         return
     debug = debug_var.get()
-    _, oriented_c2 = manual_target_based(cloud1, cloud2, type=method, debug=debug, file=file)
-    cloud2 = oriented_c2
+    if algorithm == 'tb' or algorithm == 'TB':
+        _, oriented_c2 = registration_target_based(cloud1, cloud2, type=method, debug=debug, file=file)
+        cloud2 = oriented_c2
+    elif algorithm == 'icp' or algorithm == 'ICP':
+        if method == '' or method == 'Measurement':
+            method = 'p2p'
+        trans, info = registration_ICP(cloud1, cloud2, method=method)
+        print(info)
+        cloud2.transform(trans)
     pass
 
 
-lbl1 = Label(root, text="Point clouds registration:", anchor="e")
+lbl1 = Label(root, text="Point clouds target-based registration:", anchor="e")
 lbl1.grid(row=5, column=0, sticky='e')
 
 chk1 = Checkbutton(root, variable=debug_var, onvalue=True, offvalue=False)
 
 chk1.grid(row=5, column=1)
 
-b6 = Button(root, text="Manual", command=lambda: threading.Thread(target=registration()).start())
+b6 = Button(root, text="Manual", command=lambda: threading.Thread(target=registration("TB", "Measurement")).start())
 b6.grid(row=5, column=2)
 
-b9 = Button(root, text="From file", command=lambda: threading.Thread(target=registration("File", "File")).start())
+b9 = Button(root, text="From file", command=lambda: threading.Thread(target=registration("TB", "File", "File")).start())
 b9.grid(row=5, column=3)
 
-b10 = Button(root, text="DMatching", command=lambda: threading.Thread(target=registration("ICP")).start())
+b10 = Button(root, text="DMatching", command=lambda: threading.Thread(target=registration("TB", "DM")).start())
 b10.grid(row=5, column=4, padx=5)
 
+lbl3 = Label(root, text="Point clouds ICP registration:", anchor="e")
+lbl3.grid(row=6, column=0, sticky='e')
+b15 = Button(root, text="Point2Point", command=lambda: threading.Thread(target=registration("ICP", "p2p")).start())
+b15.grid(row=6, column=2)
+
+b16 = Button(root, text="Point2Plane", command=lambda: threading.Thread(target=registration("ICP", "p2pl")).start())
+b16.grid(row=6, column=3)
+
+b17 = Button(root, text="ColoredICP", command=lambda: threading.Thread(target=registration("ICP", "cicp")).start())
+b17.grid(row=6, column=4, padx=5)
+
 """
-COMBINE AND CREATE TIN
+COMBINE CLOUDS AND CREATE TIN
 """
 
 
@@ -233,7 +251,7 @@ def generate_mesh():
 
 
 b15 = Button(root, text="Generate Mesh", command=lambda: threading.Thread(target=generate_mesh()).start)
-b15.grid(row=6, column=0)
+b15.grid(row=7, column=0)
 
 # Start GUI loop
 mainloop()
