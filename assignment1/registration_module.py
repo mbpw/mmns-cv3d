@@ -28,7 +28,47 @@ def draw_registered_pcd(ref_point_cloud, oriented_point_cloud, transformation):
     o3d.visualization.draw_geometries([ori_temp, ref_temp])
 
 
-def registration_target_based(ref_point_cloud, oriented_point_cloud, type='Measurement', debug=False, file=None):
+# FPFH descriptor
+def descriptor_3D_FPFH(point_cloud, radius_feature=1.0, max_nn=50):
+    radius = radius_feature * 5
+    print('Descriptor FPFH for radius %.3f and %i nearest neigbour' % (radius_feature, max_nn))
+    descriptor_fpfh = o3d.pipelines.registration.compute_fpfh_feature(point_cloud,
+                                                                      o3d.geometry.KDTreeSearchParamHybrid(
+                                                                          radius=radius_feature, max_nn=max_nn))
+    return descriptor_fpfh
+
+
+# Fast descriptor matching
+def descriptor_matching(oriented_point_cloud, ref_point_cloud, ori_fpfh, ref_fpfh, max_distance):
+    print('Fast descriptor matching')
+    opt = o3d.pipelines.registration.FastGlobalRegistrationOption(iteration_number=100,
+                                                                  maximum_correspondence_distance=max_distance)
+    reg_result = o3d.pipelines.registration.registration_fast_based_on_feature_matching(oriented_point_cloud,
+                                                                                        ref_point_cloud, ori_fpfh,
+                                                                                        ref_fpfh,
+                                                                                        option=opt)
+    return reg_result
+
+
+# Descriptor matching - RANSAC
+def descriptor_matching_RANSAC(oriented_point_cloud, ref_point_cloud, ori_fpfh, ref_fpfh, max_distance):
+    print('RANSAC descriptor matching')
+    trans = o3d.pipelines.registration.registration_ransac_based_on_feature_matching(oriented_point_cloud,
+                                                                                     ref_point_cloud, ori_fpfh,
+                                                                                     ref_fpfh, True, max_distance,
+                                                                                     o3d.pipelines.registration.TransformationEstimationPointToPoint(
+                                                                                         False), 3, [
+                                                                                         o3d.pipelines.registration.CorrespondenceCheckerBasedOnEdgeLength(
+                                                                                             0.9),
+                                                                                         o3d.pipelines.registration.CorrespondenceCheckerBasedOnDistance(
+                                                                                             max_distance)],
+                                                                                     o3d.pipelines.registration.RANSACConvergenceCriteria(
+                                                                                         100000, 0.999))
+    return trans
+
+
+def registration_target_based(ref_point_cloud, oriented_point_cloud, type='Measurement', debug=False, file=None,
+                              trans_init=np.identity(4), threshold=1.0):
     """
 
     :param ref_point_cloud:
@@ -36,8 +76,17 @@ def registration_target_based(ref_point_cloud, oriented_point_cloud, type='Measu
     :param type:
     :param debug:
     :param file:
+    :param trans_init
+    :param threshold:
     :return:
     """
+    """Statistics before"""
+    print('Pre-registartion evaluation')
+    evaluation = o3d.pipelines.registration.evaluate_registration(ref_point_cloud, oriented_point_cloud, threshold,
+                                                                  trans_init)
+    print(evaluation)
+
+    trans = trans_init
     if type == 'Measurement':
         print('Manual target-based registration')
         print('Please measure min. 3 tie point on reference point cloud: ')
@@ -56,10 +105,35 @@ def registration_target_based(ref_point_cloud, oriented_point_cloud, type='Measu
         point_ori = [3360897, 674034, 2525727]
     elif type == 'DM':
         print('Descriptor matching')
-        icp = o3d.pipelines.registration.registration_icp(oriented_point_cloud, ref_point_cloud, 1.0, np.identity(4))
-        print(icp)
-        trans = icp.transformation
-        draw_registered_pcd(ref_point_cloud, oriented_point_cloud, trans)
+        print('Normal computation...')
+        ref_point_cloud.normals = o3d.utility.Vector3dVector(np.zeros((1, 3)))  # Reset normals
+        ref_point_cloud.estimate_normals()
+        oriented_point_cloud.normals = o3d.utility.Vector3dVector(np.zeros((1, 3)))  # Reset normals
+        oriented_point_cloud.estimate_normals()
+        print('Calculating 3D FPFH descriptors...')
+        ori_fpfh = descriptor_3D_FPFH(oriented_point_cloud)
+        ref_fpfh = descriptor_3D_FPFH(ref_point_cloud)
+
+        # print('Matching descriptors (fast)...')
+        # reg_result = descriptor_matching(oriented_point_cloud, ref_point_cloud, ori_fpfh, ref_fpfh, max_distance=0.5)
+        # trans = reg_result.transformation
+        print('Matching descriptors (RANSAC)...')
+        reg_result = descriptor_matching_RANSAC(oriented_point_cloud, ref_point_cloud, ori_fpfh, ref_fpfh,
+                                                max_distance=0.5)
+        trans = reg_result.transformation
+
+        print(reg_result)
+        print(trans)
+        # ref_fpfh = o3d.pipelines.registration.compute_fpfh_feature(ref_point_cloud,
+        #                                                            o3d.geometry.KDTreeSearchParamHybrid(
+        #                                                                radius=threshold, max_nn=100))
+        # ori_fpfh = o3d.pipelines.registration.compute_fpfh_feature(oriented_point_cloud,
+        #                                                            o3d.geometry.KDTreeSearchParamHybrid(
+        #                                                                radius=threshold, max_nn=100))
+        # icp = o3d.pipelines.registration.registration_icp(oriented_point_cloud, ref_point_cloud, 1.0, np.identity(4))
+        # print(icp)
+        # trans = icp.transformation
+        # draw_registered_pcd(ref_point_cloud, oriented_point_cloud, trans)
 
     if type == 'Measurement' or type == 'File':
         assert (len(point_ref) >= 3 and len(point_ori) >= 3)
@@ -71,10 +145,7 @@ def registration_target_based(ref_point_cloud, oriented_point_cloud, type='Measu
         p2p = o3d.pipelines.registration.TransformationEstimationPointToPoint()
         trans = p2p.compute_transformation(oriented_point_cloud, ref_point_cloud, o3d.utility.Vector2iVector(corr))
 
-    """Statistics"""
-    evaluation = o3d.pipelines.registration.evaluate_registration(
-        oriented_point_cloud, ref_point_cloud, 1.0, np.identity(4))
-    print(evaluation)
+    """Statistics after"""
     evaluation_after = o3d.pipelines.registration.evaluate_registration(
         oriented_point_cloud, ref_point_cloud, 1.0, trans)
     print(evaluation_after)
@@ -112,7 +183,7 @@ def registration_ICP(source, target, threshold=1.0, trans_init=np.identity(4), m
             source, target, threshold, reg_p2p.transformation)
         return reg_p2p.transformation, information_reg_p2p
     elif method == 'p2pl':
-        print('Normal computation...')
+        print('Normals computation...')
         source.normals = o3d.utility.Vector3dVector(np.zeros((1, 3)))  # Reset normals
         source.estimate_normals()
         target.normals = o3d.utility.Vector3dVector(np.zeros((1, 3)))  # Reset normals

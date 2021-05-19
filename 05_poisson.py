@@ -6,6 +6,8 @@ MMNS, sem. 2, Warsaw University of Technology, 2021
 import numpy as np
 import open3d as o3d
 import matplotlib.pyplot as plt
+
+import tools
 from tools import read_point_cloud_o3d
 
 
@@ -41,7 +43,7 @@ def mesh_density(density, tin):
 
 
 # TIN filtration based on the density
-def density_tin_filtration(tin, density, quantile=0.01):
+def density_tin_filtration(tin, density, quantile=0.31):
     print("Remove low density verticies")
     vertices_to_remove = density < np.quantile(density, quantile)
     tin.remove_vertices_by_mask(vertices_to_remove)
@@ -50,13 +52,14 @@ def density_tin_filtration(tin, density, quantile=0.01):
 
 
 def poisson_filtration(point_cloud):
+    point_cloud.estimate_normals()
     tin, density = poisson_reconstruction(point_cloud)
     mesh_density(density, tin)
-    density_tin_filtration(tin, density, quantile=0.01)
+    density_tin_filtration(tin, density, quantile=0.31)
     o3d.io.write_triangle_mesh("poisson_model.ply", tin)
 
 
 if __name__ == '__main__':
-    pcd = read_point_cloud_o3d(
-        "data/02_eagle/eagle.points.ply")
+    # pcd = read_point_cloud_o3d("data/02_eagle/eagle.points.ply")
+    pcd = tools.las_to_o3d("data/01_las/chmura_zdjecia_naziemne.las")
     poisson_filtration(pcd)

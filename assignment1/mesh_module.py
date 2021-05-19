@@ -39,7 +39,7 @@ def mesh_density(density, tin):
 
 
 # TIN filtration based on the density
-def density_tin_filtration(tin, density, quantile=0.01):
+def density_tin_filtration(tin, density, quantile=0.10):
     print("Remove low density verticies")
     vertices_to_remove = density < np.quantile(density, quantile)
     tin.remove_vertices_by_mask(vertices_to_remove)
@@ -52,5 +52,5 @@ def poisson_filtration(point_cloud, file_path="poisson_model.ply", estimate_norm
         normals_estimation(point_cloud)
     tin, density = poisson_reconstruction(point_cloud)
     mesh_density(density, tin)
-    density_tin_filtration(tin=tin, density=density, quantile=0.01)
+    density_tin_filtration(tin=tin, density=density, quantile=0.10)
     o3d.io.write_triangle_mesh(mesh=tin, filename=file_path)

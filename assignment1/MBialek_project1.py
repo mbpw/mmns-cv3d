@@ -165,14 +165,14 @@ def remove_noise(cloud):
             show_popup("cloud 1")
             return
         print("Removing outliers for cloud 1...")
-        filtered, deleted = outlier_remove_stats(cloud2, 30, 2.0)
+        filtered, deleted = outlier_remove_stats(cloud1, 30, 1.0)
         cloud1 = filtered
     elif cloud == 'c2':
         if cloud2 is None:
             show_popup("cloud 2")
             return
         print("Removing outliers for cloud 2...")
-        filtered, deleted = outlier_remove_stats(cloud2, 30, 2.0)
+        filtered, deleted = outlier_remove_stats(cloud2, 30, 1.0)
         cloud2 = filtered
 
 
