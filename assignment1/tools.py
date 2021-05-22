@@ -35,6 +35,42 @@ def las_to_o3d(file):
     return point_cloud
 
 
+# Save LAS file with header generation
+def save_points_with_header_generation(file, x, y, z, r, g, b, ext='pcd'):
+    print('Header generation')
+    header = laspy.header.Header(point_format=2)  # format=2 to add RGB
+    las_pcd = laspy.file.File(file, header=header, mode="w")
+    print('Compute max, min values')
+    min_x = np.min(x)
+    min_y = np.min(y)
+    min_z = np.min(z)
+    max_x = np.max(x)
+    max_y = np.max(y)
+    max_z = np.max(z)
+    # mean_x = np.mean(x)
+    # mean_y = np.mean(y)
+    # mean_z = np.mean(z)
+    # las_pcd.header.offset = [mean_x, mean_y, mean_z]
+    las_pcd.header.offset = [0, 0, 0]
+    las_pcd.header.max = [max_x, max_y, max_z]
+    las_pcd.header.min = [min_x, min_y, min_z]
+    # las_pcd.header.scale = [0.001, 0.001, 0.001]
+    las_pcd.header.scale = [1.0, 1.0, 1.0]
+    print("Saving cloud...")
+    las_pcd.X = x
+    las_pcd.Y = y
+    las_pcd.Z = z
+    if ext == 'pcd':
+        r *= 255
+        g *= 255
+        b *= 255
+    las_pcd.red = r
+    las_pcd.green = g
+    las_pcd.blue = b
+    las_pcd.close()
+    print("Point cloud successfuly saved!")
+
+
 # Manual point picking
 def manual_point_picking(point_cloud):
     print("Manual point measurement")
@@ -59,3 +95,20 @@ def draw_registered_pcd(ref_point_cloud, oriented_point_cloud, transformation):
     ref_temp.paint_uniform_color([0, 1, 0])
     ori_temp.transform(transformation)
     o3d.visualization.draw_geometries([ori_temp, ref_temp])
+
+
+# Save LAS file with header copy
+def save_pcd_as_las(file, pcd):
+    """
+    Save LAS file with header copy
+    :param file:
+    :param pcd:
+    :return:
+    """
+    save_points_with_header_generation(file, *np.transpose(pcd.points), *np.transpose(pcd.colors))
+
+
+if __name__ == '__main__':
+    pcd = las_to_o3d("../data/01_las/chmura_dj.las")
+    save_points_with_header_generation("result/test.las", *np.transpose(pcd.points), *np.transpose(pcd.colors))
+    # print(np.transpose(pcd.points))

@@ -242,16 +242,34 @@ def generate_mesh():
     if cloud1 is None or cloud2 is None:
         show_popup("both clouds")
         return
-    file = filedialog.asksaveasfilename()
+    file = filedialog.asksaveasfilename(defaultextension=".ply",
+                                        filetypes=(("PLY mesh file", "*.ply"), ("All Files", "*.*")))
     if file is not None:
         print("Combining two point clouds...")
         combined = cloud1 + cloud2
-        print("Saving...")
+        print("Saving mesh model...")
         poisson_filtration(combined, file, True)
 
 
-b15 = Button(root, text="Generate Mesh", command=lambda: threading.Thread(target=generate_mesh()).start)
-b15.grid(row=7, column=0)
+def save_cloud():
+    if cloud1 is None or cloud2 is None:
+        show_popup("both clouds")
+        return
+    file = filedialog.asksaveasfilename(defaultextension=".las",
+                                        filetypes=(("LAS file", "*.las"), ("All Files", "*.*")))
+    if file is not None:
+        print("Combining two point clouds...")
+        combined = cloud1 + cloud2
+        print("Saving point cloud...")
+        tools.save_pcd_as_las(file, combined)
+
+
+f1 = Frame(root)
+b15 = Button(f1, text="Generate Mesh", command=lambda: threading.Thread(target=generate_mesh()).start)
+b16 = Button(f1, text="Save combined Cloud", command=lambda: threading.Thread(target=save_cloud()).start)
+f1.grid(row=7, column=0, sticky="nsew")
+b15.pack(side="left")
+b16.pack(side="right")
 
 # Start GUI loop
 mainloop()
