@@ -6,7 +6,7 @@ Following project is a part of "Computer Vision and 3D Data Processing" course c
 on Warsaw University of Technology - Mobile Mapping and Navigation Systems speciality on the faculty of Geodesy and
 Cartography.
 
-The required program was supposed to perform Point Cloud processing including following steps:
+The program was required to perform point cloud processing including following steps:
 
 1) The conversion of the point cloud - LAS into the O3D format.
 2) The point cloud filtering using the statistical method - please propose input parameters.
@@ -80,15 +80,27 @@ calculated and transformed cloud is displayed.
 
 - File
 
-With spaces or tabs between them. Example of the file:
-> 310661.30	4683019.75	41.13	310543.05	4682954.20	37.17 310665.15	4683118.77	65.76	310580.65	4683044.35	63.15 310806.25	4683122.57	54.26	310715.15	4682997.55	51.07
+This method uses previously created text file containing corresponding points' coordinates. In each row there should be
+6 values (XYZ for reference cloud and XYZ for the one being oriented) with spaces or tabs between them. Example of the
+file (it is also attached to the project as *example_coords_manual.txt*):
+> 310661.30	4683019.75	41.13	310543.05	4682954.20	37.17
+>
+> 310665.15	4683118.77	65.76	310580.65	4683044.35	63.15
+>
+> 310806.25	4683122.57	54.26	310715.15	4682997.55	51.07
 
-- DMatching
+- DMatching (feature descriptors matching)
+
+Here the algorithm calculates Fast Point Feature Histograms (FPFH) for each point and then tries to match the
+descriptors between the clouds (reference and oriented) in order to find the optimal transformation using RANSAC
+algorithm. It is also possible to use FAST method implemented in Open3D, hwoever it is needed to be changed directly
+inside *registration_module.py* file [lines: 151-157].
 
 ### Fine (ICP) registration
 
 The fine registration can be performed via (5) ***ICP registration*** using one of three algorithms: PointToPoint,
-PointToPlane or ColoredICP. Similarily, we can then obtain statistics of the resultant registration - *fitness* and
+PointToPlane or ColoredICP. Similarily, after the process we can obtain statistics of the resultant registration - *
+fitness* and
 *RMSE*.
 
 ### Combining and saving
@@ -99,12 +111,12 @@ using **[Generate mesh]**
 .
 
 ___
-Of course you can also use each module (visualizing, outlier removal, downsampling, registration, mesh generating)
+Of course, you can also use each module (visualizing, outlier removal, downsampling, registration, mesh generating)
 separately in *.py* scripts (without GUI). Example code is provided in
 ___test.py___.
 
 # License
 
-Following code is distributed under the MIT license (see: [LICENSE.md](LICENSE.md)).
+The code is distributed under the MIT license (see: [LICENSE.md](LICENSE.md)).
 
 &copy; Mateusz Białek 2021
