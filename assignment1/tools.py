@@ -111,18 +111,25 @@ def save_pcd_as_las(file, pcd):
 def calculate_transformation_from_coords(refer, oriented):
     mean_s = np.mean(refer, 0)
     mean_t = np.mean(oriented, 0)
+
+    # print(mean_s)
+    # print(mean_t)
+
     ref_zeroed = refer - mean_s
     ori_zeroed = oriented - mean_t
     transposed = np.transpose(ori_zeroed)
     multiplcated = np.matmul(transposed, ref_zeroed)
-
     # print(multiplcated)
+
     S = np.eye(4, dtype=np.float64)
     U, D, VT = np.linalg.svd(multiplcated)
-    if np.linalg.det(U) * np.linalg.det(np.transpose(VT)) < 0:
-        S[-1][-1] = -1
+    # if np.linalg.det(U) * np.linalg.det(np.transpose(VT)) < 0:
+    #     S[-1][-1] = -1
+    # print(U)
+    # print(D)
+    # print(VT)
+    # print(S)
 
-    # print(VT, S)
     R = np.matmul(U, np.matmul(S, VT))
     # R = np.reshape(R, -1)
     R = np.transpose(R)

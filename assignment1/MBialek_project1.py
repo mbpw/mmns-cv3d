@@ -195,6 +195,10 @@ def registration(algorithm="tb", method="Measurement", file=None):
         return
     debug = debug_var.get()
     if algorithm == 'tb' or algorithm == 'TB':
+        if method == 'File':
+            file = filedialog.askopenfilename(filetypes=[("All Files", ".*")])
+            if file is None or file == '':
+                return
         _, oriented_c2 = registration_target_based(cloud1, cloud2, type=method, debug=debug, file=file)
         cloud2 = oriented_c2
     elif algorithm == 'icp' or algorithm == 'ICP':
@@ -216,7 +220,8 @@ chk1.grid(row=5, column=1)
 b6 = Button(root, text="Manual", command=lambda: threading.Thread(target=registration("TB", "Measurement")).start())
 b6.grid(row=5, column=2)
 
-b9 = Button(root, text="From file", command=lambda: threading.Thread(target=registration("TB", "File", "File")).start())
+b9 = Button(root, text="From file", command=lambda: threading.Thread(target=registration("TB", "File")).start())
+# b9 = Button(root, text="From file", command=lambda: threading.Thread(target=registration("TB", "Correspondence", "File")).start())
 b9.grid(row=5, column=3)
 
 b10 = Button(root, text="DMatching", command=lambda: threading.Thread(target=registration("TB", "DM")).start())
