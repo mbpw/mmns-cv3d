@@ -225,6 +225,10 @@ def registration(algorithm="tb", method="Measurement", file=None):
         return
     debug = debug_var.get()
     if algorithm == 'tb' or algorithm == 'TB':
+        if method == 'File':
+            file = filedialog.askopenfilename(filetypes=[("All Files", ".*")])
+            if file is None or file == '':
+                return
         _, oriented_c2 = registration_target_based(cloud1, cloud2, type=method, debug=debug, file=file)
         cloud2 = oriented_c2
     elif algorithm == 'icp' or algorithm == 'ICP':

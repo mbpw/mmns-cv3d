@@ -52,7 +52,8 @@ def ICP_registration(source, target, threshold=1.0, trans_init=np.identity(4), m
         print("ICP <Point to point>")
         reg_p2p = o3d.pipelines.registration.registration_icp(
             source, target, threshold, trans_init,
-            o3d.pipelines.registration.TransformationEstimationPointToPoint())
+            o3d.pipelines.registration.TransformationEstimationPointToPoint(),
+            o3d.pipelines.registration.ICPConvergenceCriteria(max_iteration=2000))
         print(reg_p2p)
         print("Transformation matrix:")
         print(reg_p2p.transformation)
@@ -69,7 +70,8 @@ def ICP_registration(source, target, threshold=1.0, trans_init=np.identity(4), m
         print("ICP <Point to plane>")
         reg_p2pl = o3d.pipelines.registration.registration_icp(
             source, target, threshold, trans_init,
-            o3d.pipelines.registration.TransformationEstimationPointToPlane())
+            o3d.pipelines.registration.TransformationEstimationPointToPlane(),
+            o3d.pipelines.registration.ICPConvergenceCriteria(max_iteration=2000))
         print(reg_p2pl)
         print("Transformation matrix:")
         print(reg_p2pl.transformation)
@@ -96,6 +98,7 @@ if __name__ == '__main__':
     ori = las_to_o3d(
         "data/01_las/chmura_zdjecia_naziemne.las")
     trans_man = manual_target_based(ref, ori)
-    ICP_registration(ref, ori, threshold=0.5, trans_init=trans_man, method='p2p')
+    t, info = ICP_registration(ref, ori, threshold=0.5, trans_init=trans_man, method='p2pl')
+    print(info)
 
     # ref.compute_point_cloud_distance()
