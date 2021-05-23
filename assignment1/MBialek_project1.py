@@ -114,41 +114,9 @@ def load_cloud_memory(path, c_number):
         cloud2 = temp_cloud
     else:
         return
-    print("Successfuly Loaded points from " + path + " to memory!")
+    print("Successfuly loaded points from " + path + " to memory!")
+    print("\tNumber of points: %i" % len(temp_cloud.points))
 
-
-"""
-DOWNSAMPLING
-"""
-
-
-def downsample(cloud):
-    # TODO: parameters
-    from downsampling_module import voxel_downsampling
-    global cloud1, cloud2
-
-    if cloud == 'c1':
-        if cloud1 is None:
-            show_popup("cloud 1")
-            return
-        print("Downsampling cloud 1...")
-        downsampled = voxel_downsampling(cloud1, 0.1)
-        cloud1 = downsampled
-    elif cloud == 'c2':
-        if cloud2 is None:
-            show_popup("cloud 2")
-            return
-        print("Downsampling cloud 2...")
-        downsampled = voxel_downsampling(cloud2, 0.1)
-        cloud2 = downsampled
-
-
-lbl3 = Label(root, text="Downsample:", anchor="e")
-b13 = Button(root, text="Cloud 1", command=lambda: threading.Thread(target=downsample("c1")).start())
-b14 = Button(root, text="Cloud 2", command=lambda: threading.Thread(target=downsample("c2")).start())
-lbl3.grid(row=3, column=0, sticky='e')
-b13.grid(row=3, column=2)
-b14.grid(row=3, column=3)
 
 """
 OUTLIERS
@@ -159,29 +127,91 @@ def remove_noise(cloud):
     # TODO: parameters
     from outliers_module import outlier_remove_stats
     global cloud1, cloud2
-
+    std = float(e3.get())
+    n = int(e4.get())
     if cloud == 'c1':
         if cloud1 is None:
             show_popup("cloud 1")
             return
         print("Removing outliers for cloud 1...")
-        filtered, deleted = outlier_remove_stats(cloud1, 30, 1.0)
+        filtered, deleted = outlier_remove_stats(cloud1, n, std)
         cloud1 = filtered
     elif cloud == 'c2':
         if cloud2 is None:
             show_popup("cloud 2")
             return
         print("Removing outliers for cloud 2...")
-        filtered, deleted = outlier_remove_stats(cloud2, 30, 1.0)
+        filtered, deleted = outlier_remove_stats(cloud2, n, std)
         cloud2 = filtered
 
 
+# Remove noise (outliers) GUI
 lbl2 = Label(root, text="Remove noise:", anchor="e")
 b11 = Button(root, text="Cloud 1", command=lambda: threading.Thread(target=remove_noise("c1")).start())
 b12 = Button(root, text="Cloud 2", command=lambda: threading.Thread(target=remove_noise("c2")).start())
-lbl2.grid(row=4, column=0, sticky='e')
-b11.grid(row=4, column=2)
-b12.grid(row=4, column=3)
+lbl2.grid(row=3, column=0, sticky='e')
+b11.grid(row=3, column=2)
+b12.grid(row=3, column=3)
+
+# Remove noise (outliers) statistical parameter
+f1 = Frame(root)
+lbl4 = Label(f1, text="std:")
+lbl4.pack(side='left')
+e3 = Entry(f1, width=3)
+e3.pack(side='left')
+e3.insert(0, "2.0")
+lbl5 = Label(f1, text="n:")
+lbl5.pack(side='left')
+e4 = Entry(f1, width=3)
+e4.insert(0, "100")
+e4.pack(side='left')
+f1.grid(row=3, column=4, sticky='w')
+
+"""
+DOWNSAMPLING
+"""
+
+
+def downsample(cloud):
+    # TODO: parameters
+    from downsampling_module import voxel_downsampling, uniform_downsampling
+    global cloud1, cloud2
+    every = int(e5.get())
+    if cloud == 'c1':
+        if cloud1 is None:
+            show_popup("cloud 1")
+            return
+        print("Downsampling cloud 1...")
+        # downsampled = voxel_downsampling(cloud1, 0.1)
+        downsampled = uniform_downsampling(cloud1, every)
+        cloud1 = downsampled
+    elif cloud == 'c2':
+        if cloud2 is None:
+            show_popup("cloud 2")
+            return
+        print("Downsampling cloud 2...")
+        # downsampled = voxel_downsampling(cloud2, 1.0)
+        downsampled = uniform_downsampling(cloud2, every)
+        cloud2 = downsampled
+
+
+lbl3 = Label(root, text="Downsample:", anchor="e")
+b13 = Button(root, text="Cloud 1", command=lambda: threading.Thread(target=downsample("c1")).start())
+b14 = Button(root, text="Cloud 2", command=lambda: threading.Thread(target=downsample("c2")).start())
+lbl3.grid(row=4, column=0, sticky='e')
+b13.grid(row=4, column=2)
+b14.grid(row=4, column=3)
+
+# Downsampling parameter (every n-th point)
+f2 = Frame(root)
+lbl5 = Label(f2, text="every")
+lbl5.pack(side='left')
+lbl6 = Label(f2, text="points")
+lbl6.pack(side='right')
+e5 = Entry(f2, width=3)
+e5.insert(0, "10")
+e5.pack()
+f2.grid(row=4, column=4, sticky='w')
 
 """
 REGISTRATION
@@ -244,7 +274,7 @@ def generate_mesh():
         return
     file = filedialog.asksaveasfilename(defaultextension=".ply",
                                         filetypes=(("PLY mesh file", "*.ply"), ("All Files", "*.*")))
-    if file is not None:
+    if file is not None and file != '':
         print("Combining two point clouds...")
         combined = cloud1 + cloud2
         print("Saving mesh model...")
@@ -264,10 +294,10 @@ def save_cloud():
         tools.save_pcd_as_las(file, combined)
 
 
-f1 = Frame(root)
-b15 = Button(f1, text="Generate Mesh", command=lambda: threading.Thread(target=generate_mesh()).start)
-b16 = Button(f1, text="Save combined Cloud", command=lambda: threading.Thread(target=save_cloud()).start)
-f1.grid(row=7, column=0, sticky="nsew")
+f3 = Frame(root)
+b15 = Button(f3, text="Generate Mesh", command=lambda: threading.Thread(target=generate_mesh()).start)
+b16 = Button(f3, text="Save combined Cloud", command=lambda: threading.Thread(target=save_cloud()).start)
+f3.grid(row=7, column=0, sticky="nsew")
 b15.pack(side="left")
 b16.pack(side="right")
 

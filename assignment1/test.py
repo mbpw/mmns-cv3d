@@ -1,47 +1,27 @@
-from tkinter import *
-from tkinter import messagebox
-import asyncio
-import threading
-import random
+"""------------------------------------------------------
+Author: Mateusz Białek <mateusz.bialek.stud@pw.edu.pl>
+Project for Computer Vision and 3D Data Processing course
+MMNS, sem. 2, Warsaw University of Technology, 2021
+------------------------------------------------------"""
+# Libraries
+import numpy as np
+import open3d as o3d
 
+# Additional tools
+from tools import *
 
-def _asyncio_thread(async_loop):
-    async_loop.run_until_complete(do_urls())
-
-
-def do_tasks(async_loop):
-    """ Button-Event-Handler starting the asyncio part. """
-    threading.Thread(target=_asyncio_thread, args=(async_loop,)).start()
-
-
-async def one_url(url):
-    """ One task. """
-    sec = random.randint(1, 8)
-    await asyncio.sleep(sec)
-    return 'url: {}\tsec: {}'.format(url, sec)
-
-
-async def do_urls():
-    """ Creating and starting 10 tasks. """
-    tasks = [one_url(url) for url in range(10)]
-    completed, pending = await asyncio.wait(tasks)
-    results = [task.result() for task in completed]
-    print('\n'.join(results))
-    import visualization_module
-    visualization_module.visualize_cloud("C:\\Users\\Mateusz\\CV3D\\data\\01_las\\chmura_dj.las")
-
-
-def do_freezed():
-    messagebox.showinfo(message='Tkinter is reacting.')
-
-
-def main(async_loop):
-    root = Tk()
-    Button(master=root, text='Asyncio Tasks', command=lambda: do_tasks(async_loop)).pack()
-    buttonX = Button(master=root, text='Freezed???', command=do_freezed).pack()
-    root.mainloop()
-
+# Modules
+from mesh_module import *
+from outliers_module import *
+from downsampling_module import *
+from registration_module import *
+from visualization_module import *
 
 if __name__ == '__main__':
-    async_loop = asyncio.get_event_loop()
-    main(async_loop)
+    cloud1 = "<path_to_your_cloud>"
+    cloud2 = "<path_to_your_cloud>"
+    pcd1 = las_to_o3d(cloud1)
+    pcd2 = las_to_o3d(cloud2)
+    visualize_both(cloud1, cloud2)
+
+    # (...)

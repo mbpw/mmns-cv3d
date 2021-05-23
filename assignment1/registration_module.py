@@ -114,13 +114,13 @@ def registration_target_based(ref_point_cloud, oriented_point_cloud, type='Measu
         ori_fpfh = descriptor_3D_FPFH(oriented_point_cloud)
         ref_fpfh = descriptor_3D_FPFH(ref_point_cloud)
 
-        print('Matching descriptors (fast)...')
-        reg_result = descriptor_matching(oriented_point_cloud, ref_point_cloud, ori_fpfh, ref_fpfh, max_distance=0.5)
-        trans = reg_result.transformation
-        # print('Matching descriptors (RANSAC)...')
-        # reg_result = descriptor_matching_RANSAC(oriented_point_cloud, ref_point_cloud, ori_fpfh, ref_fpfh,
-        #                                         max_distance=0.5)
+        # print('Matching descriptors (fast)...')
+        # reg_result = descriptor_matching(oriented_point_cloud, ref_point_cloud, ori_fpfh, ref_fpfh, max_distance=0.5)
         # trans = reg_result.transformation
+        print('Matching descriptors (RANSAC)...')
+        reg_result = descriptor_matching_RANSAC(oriented_point_cloud, ref_point_cloud, ori_fpfh, ref_fpfh,
+                                                max_distance=0.5)
+        trans = reg_result.transformation
 
         print(reg_result)
         print(trans)
